@@ -17,11 +17,24 @@ from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
 from image_features import *
+from classify import *
 
 # NOTE: the next import is only valid for scikit-learn version <= 0.17
 # for scikit-learn >= 0.18 use:
 # from sklearn.model_selection import train_test_split
 from sklearn.cross_validation import train_test_split
+
+
+# Here is your draw_boxes function from the previous exercise
+def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
+    # Make a copy of the image
+    imcopy = np.copy(img)
+    # Iterate through the bounding boxes
+    for bbox in bboxes:
+        # Draw a rectangle given bbox coordinates
+        cv2.rectangle(imcopy, bbox[0], bbox[1], color, thick)
+    # Return the image copy with boxes drawn
+    return imcopy
 
 # Define a function to extract features from a single image window
 # This function is very similar to extract_features()
@@ -161,15 +174,8 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
 cars = []
 notcars = []
 
-images = glob.glob('./vehicles/GTI*/*.jpeg')
-for image in images:
-    if 'image' in image:
-        cars.append(image)
-
-images = glob.glob('./non-vehicles/GTI*/*.jpeg')
-for image in images:
-    if 'image' in image or 'extra' in image:
-        notcars.append(image)
+cars = [y for x in os.walk('./vehicles/') for y in glob.glob(os.path.join(x[0], '*.png'))]
+notcars = [y for x in os.walk('./non-vehicles/') for y in glob.glob(os.path.join(x[0], '*.png'))]
 
 print('dataset sizes: ',  len(cars), len(notcars))
 
@@ -236,13 +242,13 @@ print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
 # Check the prediction time for a single sample
 t=time.time()
 
-image = mpimg.imread('bbox-example-image.jpg')
+image = mpimg.imread('./test_images/test1.jpg')
 draw_image = np.copy(image)
 
 # Uncomment the following line if you extracted training
 # data from .png images (scaled 0 to 1 by mpimg) and the
 # image you are searching is a .jpg (scaled 0 to 255)
-#image = image.astype(np.float32)/255
+image = image.astype(np.float32)/255
 
 windows = slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, 
                     xy_window=(94, 94), xy_overlap=(0.5, 0.5))
@@ -254,8 +260,9 @@ hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_sp
                         hog_channel=hog_channel, spatial_feat=spatial_feat, 
                         hist_feat=hist_feat, hog_feat=hog_feat)                       
 
-window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)                    
-
+window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)   
+#mpimg.imsave('test1.jpg', window_img)
+mpimg.imsave('test1.jpg', draw_image)
 plt.imshow(window_img)
 
 
