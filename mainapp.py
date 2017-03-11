@@ -113,8 +113,8 @@ orient = 19  # HOG orientations
 pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 4 # HOG cells per block
 hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
-spatial_size = (16, 16) # Spatial binning dimensions
-hist_bins = 16    # Number of histogram bins
+spatial_size = (32, 32) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off
@@ -186,4 +186,33 @@ for fname in images:
     print(len(hot_windows))
     window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
     mpimg.imsave('./output_images/' +  fname.split('/')[-1] , window_img)
+
+#result = pipeline(image, cam_mtx, cam_dist)
+def process_image(image):
+    # NOTE: The output you return should be a color image (3 channel) for processing video below
+    # you should return the final output (image with lines are drawn on lanes)
+    #result  = lanedetect_pipeline(image, cam_mtx, cam_dist, vertices, lanes_info)
+    image = mpimg.imread(fname)
+    draw_image = np.copy(image)
+    # Uncomment the following line if you extracted training
+    # data from .png images (scaled 0 to 1 by mpimg) and the
+    # image you are searching is a .jpg (scaled 0 to 255)
+    image = image.astype(np.float32)/255
+    windows = slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, 
+                    xy_window=(94, 94), xy_overlap=(0.6, 0.6))
+
+    hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_space, 
+                        spatial_size=spatial_size, hist_bins=hist_bins, 
+                        orient=orient, pix_per_cell=pix_per_cell, 
+                        cell_per_block=cell_per_block, 
+                        hog_channel=hog_channel, spatial_feat=spatial_feat, 
+                        hist_feat=hist_feat, hog_feat=hog_feat)                       
+
+    result = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+    return result
+
+white_output = 'project_video_out.mp4'
+clip1 = VideoFileClip("project_video.mp4", audio=False)
+white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
+white_clip.write_videofile(white_output, audio=False)
 
