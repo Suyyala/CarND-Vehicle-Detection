@@ -163,8 +163,7 @@ print(round(t2-t, 2), 'Seconds to train SVC...')
 print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
 # Check the prediction time for a single sample
 t=time.time()
-
-images = glob.glob('./test_images/test*.jpg')
+images = glob.glob(os.path.join("test_images", "test*.jpg"))
 for fname in images:
     print(fname)
     image = mpimg.imread(fname)
@@ -185,14 +184,14 @@ for fname in images:
 
     print(len(hot_windows))
     window_img = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
-    mpimg.imsave('./output_images/' +  fname.split('/')[-1] , window_img)
+    mpimg.imsave(os.path.join('output_images',  os.path.split(fname)[-1]) , window_img)
 
 #result = pipeline(image, cam_mtx, cam_dist)
 def process_image(image):
     # NOTE: The output you return should be a color image (3 channel) for processing video below
     # you should return the final output (image with lines are drawn on lanes)
     #result  = lanedetect_pipeline(image, cam_mtx, cam_dist, vertices, lanes_info)
-    image = mpimg.imread(fname)
+    #image = mpimg.imread(fname)
     draw_image = np.copy(image)
     # Uncomment the following line if you extracted training
     # data from .png images (scaled 0 to 1 by mpimg) and the
