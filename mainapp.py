@@ -16,6 +16,7 @@ import time
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
+from skimage import color
 from image_features import *
 from classify import *
 
@@ -50,6 +51,9 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
         file_features = []
         # Read in each one by one
         image = mpimg.imread(file)
+        w, h,c = np.shape(image)
+        if(c == 4):
+            image = convert_color(image, conv='RGBA2RGB')
         # apply color conversion if other than 'RGB'
         if color_space != 'RGB':
             if color_space == 'HSV':
@@ -103,17 +107,17 @@ print('dataset sizes: ',  len(cars), len(notcars))
 
 # Reduce the sample size because
 # The quiz evaluator times out after 13s of CPU time
-sample_size = 8000
-cars = cars[0:sample_size]
-notcars = notcars[0:sample_size]
+#sample_size = 8000
+#cars = cars[0:2]
+#notcars = notcars[0:2]
 
 ### TODO: Tweak these parameters and see how the results change.
 color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 19  # HOG orientations
+orient = 29  # HOG orientations
 pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 4 # HOG cells per block
 hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
-spatial_size = (32, 32) # Spatial binning dimensions
+spatial_size = (16, 16) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
@@ -126,12 +130,15 @@ car_features = extract_features(cars, color_space=color_space,
                         cell_per_block=cell_per_block, 
                         hog_channel=hog_channel, spatial_feat=spatial_feat, 
                         hist_feat=hist_feat, hog_feat=hog_feat)
+
 notcar_features = extract_features(notcars, color_space=color_space, 
                         spatial_size=spatial_size, hist_bins=hist_bins, 
                         orient=orient, pix_per_cell=pix_per_cell, 
                         cell_per_block=cell_per_block, 
                         hog_channel=hog_channel, spatial_feat=spatial_feat, 
                         hist_feat=hist_feat, hog_feat=hog_feat)
+
+print(np.shape(car_features), np.shape(notcar_features))
 
 X = np.vstack((car_features, notcar_features)).astype(np.float64)                        
 # Fit a per-column scaler
@@ -173,7 +180,7 @@ for fname in images:
     # image you are searching is a .jpg (scaled 0 to 255)
     image = image.astype(np.float32)/255
     windows = slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, 
-                    xy_window=(94, 94), xy_overlap=(0.6, 0.6))
+                    xy_window=(94, 94), xy_overlap=(0.7, 0.7))
 
     hot_windows = search_windows(image, windows, svc, X_scaler, color_space=color_space, 
                         spatial_size=spatial_size, hist_bins=hist_bins, 
@@ -210,8 +217,8 @@ def process_image(image):
     result = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
     return result
 
-white_output = 'project_video_out.mp4'
-clip1 = VideoFileClip("project_video.mp4", audio=False)
+white_output = 'test_video_out.mp4'
+clip1 = VideoFileClip("test_video.mp4", audio=False)
 white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
 white_clip.write_videofile(white_output, audio=False)
 
