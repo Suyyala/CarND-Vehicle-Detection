@@ -19,8 +19,24 @@ from skimage.feature import hog
 from skimage import color
 from image_features import *
 from classify import *
+from scipy.ndimage.measurements import label
+from collections import deque
 
 
+def draw_labeled_bboxes(img, labels):
+    # Iterate through all detected cars
+    for car_number in range(1, labels[1]+1):
+        # Find pixels with each car_number label value
+        nonzero = (labels[0] == car_number).nonzero()
+        # Identify x and y values of those pixels
+        nonzeroy = np.array(nonzero[0])
+        nonzerox = np.array(nonzero[1])
+        # Define a bounding box based on min/max x and y
+        bbox = ((np.min(nonzerox), np.min(nonzeroy)), (np.max(nonzerox), np.max(nonzeroy)))
+        # Draw the box on the image
+        cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+    # Return the image
+    return img
 
 # Here is your draw_boxes function from the previous exercise
 def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
@@ -60,6 +76,18 @@ svc = pickle.load(open('svc_model.p', 'rb'))
 scaler = pickle.load(open('scaler.p', 'rb'))
 
 
+class heat_windows:
+    def __init__(self, max_len):
+        self.win_q = deque(maxlen=max_len)
+    def update(self, windows):
+        self.win_q.append(windows)
+    def get(self):
+        win = []
+        for e in  list(self.win_q):
+            win = win + e
+        return win
+
+heatwindows = heat_windows(5)
 
 #result = pipeline(image, cam_mtx, cam_dist)
 def process_image(image):
@@ -82,11 +110,20 @@ def process_image(image):
                         hog_channel=hog_channel, spatial_feat=spatial_feat, 
                         hist_feat=hist_feat, hog_feat=hog_feat)                       
 
-    result = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
+    heatwindows.update(hot_windows)
+    heatwin_list = heatwindows.get()
+    heat = np.zeros_like(draw_image[:,:,0]).astype(np.float)
+    heat = add_heat(heat, heatwin_list)
+    heat = apply_threshold(heat, 3)
+    heatmap = np.clip(heat, 0, 255)
+    labels = label(heatmap)
+    result = draw_labeled_bboxes(draw_image, labels)
+    #result = draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
     return result
 
-white_output = 'test_video_out.mp4'
-clip1 = VideoFileClip("test_video.mp4", audio=False)
-white_clip = clip1.fl_image(process_image) #NOTE: this function expects color images!!
-white_clip.write_videofile(white_output, audio=False)
+
+clip = VideoFileClip("test_video.mp4", audio=False)
+clip = clip.fl_image(process_image) #NOTE: this function expects color images!!
+clip.write_videofile('test_video_out.mp4', audio=False)
+
 
