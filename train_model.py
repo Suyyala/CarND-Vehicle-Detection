@@ -39,6 +39,7 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
         file_features = []
         # Read in each one by one
         image = mpimg.imread(file)
+        image = (image*255).astype(np.uint8)
         w, h,c = np.shape(image)
         if(c == 4):
             image = convert_color(image, conv='RGBA2RGB')
@@ -100,8 +101,8 @@ print('dataset sizes: ',  len(cars), len(notcars))
 #notcars = notcars[0:10]
 
 ### TODO: Tweak these parameters and see how the results change.
-color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 29  # HOG orientations
+color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 19  # HOG orientations
 pix_per_cell = 16 # HOG pixels per cell
 cell_per_block = 4 # HOG cells per block
 hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
