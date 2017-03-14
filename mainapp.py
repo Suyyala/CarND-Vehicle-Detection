@@ -22,6 +22,10 @@ from classify import *
 from scipy.ndimage.measurements import label
 from collections import deque
 
+
+
+import sys, getopt
+
 import random, string
 
 def random_string(length):
@@ -109,7 +113,7 @@ def process_image(image):
     hot_windows_all = []
     #window_sizes = [(96,96), (64,64)]
     window_sizes = [(128,128), (96, 96), (64, 64)]
-    x_start_stops = [[200, None], [300, None], [300, None]]
+    x_start_stops = [[400, None], [400, None], [400, None]]
     y_start_stops = [[400, None], [400, 620], [400,528]]
     window_index = 0
     for window_size in window_sizes:
@@ -135,7 +139,7 @@ def process_image(image):
     heatwin_list = heatwindows.get()
     heat = np.zeros_like(draw_image[:,:,0]).astype(np.float)
     heat = add_heat(heat, heatwin_list)
-    heat = apply_threshold(heat, 30)
+    heat = apply_threshold(heat, 20)
     heatmap = np.clip(heat, 0, 255)
     labels = label(heatmap)
     
@@ -146,11 +150,28 @@ def process_image(image):
     
     return result
 
-video_input = 'projecct_5_1.mp4'
+def main(argv):
+    inputfile = ''
+    outputfile = ''
+    try:
+        opts, args = getopt.getopt(argv,"hi:",["ifile="])
+    except getopt.GetoptError:
+        print('mainapp.py -i <inputfile>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('mainapp.py -i <inputfile>')
+            sys.exit()
+        elif opt in ("-i", "--ifile"):
+            inputfile = arg
 
-clip = VideoFileClip(video_input, audio=False)
-clip = clip.fl_image(process_image) #NOTE: this function expects color images!!
-#clip.preview()
-clip.write_videofile(video_input.split('.')[0] + '_out' + '.mp4', audio=False)
+    print('Input file is "', inputfile)
+    video_input = inputfile
 
+    clip = VideoFileClip(video_input, audio=False)
+    clip = clip.fl_image(process_image) #NOTE: this function expects color images!!
+    #clip.preview()
+    clip.write_videofile(video_input.split('.')[0] + '_out' + '.mp4', audio=False)
 
+if __name__ == "__main__":
+   main(sys.argv[1:])
