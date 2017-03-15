@@ -18,10 +18,6 @@ The goals / steps of this project are the following:
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-
-
-###Histogram of Oriented Gradients (HOG)
 
 ####1. Extracted  features (HOG + Histogram + ) from the training images.
 
@@ -38,12 +34,12 @@ Here is an example using the `YUV` color space and HOG parameters of `orientatio
 
 ![alt text][image2]
 
-####2. Explain how you settled on your final choice of HOG parameters.
+####2. Image feature parameters.
 
 I have tried various parameters and tested the classifer  on test_images. For me, 'YUV' color space with above HOG parameters given
 very good results compared to RGB space.
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+####3. Training the model
 
 The code for this step is contained in file 'train_model.py' from lines #86 to #163.
 
@@ -59,8 +55,7 @@ After, I am satified with test accuracy,saved LinearSVM model for use in my main
 
 ###Sliding Window Search
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
-
+####1.
 With training model saved, rest of the  vehicle detection pipeline is implemeted in mainapp.py from lines #102 to #151.
 
 The code for sliding window search implemented is in file 'classify.py' from lines #38 to #74, which generates list of windows
@@ -78,20 +73,20 @@ implemented in Classify.py (lines #18 to #32)
 
 ![alt text][image3]
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+####2. 
 
-Ultimately I searched on three scales using all channels for HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on three scales using all channels for HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I have reduced image search regions for different window sizes to speed up the pipeline. Here are some example images:
 
 ![alt text][image4]
 ---
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video_out.mp4)
+####1.
+My results video can be found in gitrepo (./project_video_out.mp4)
 
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+####2.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
@@ -113,7 +108,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ###Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+####1.
 
 I have spent lot of time fighting false positives, which made to collect more data of trees, roads, traffic signs, dividers etc to reduce the false positives.  However, I have quickly realized it is balanced boat that requires lot of positive instead of lot of negative examples(which will never be exhaustive). Althogh, this feature based implemented works fine to an extent howevet, it is not robust enuogh to changing environment requiring lot of features. Also, need higher framerates and lot of processing power to do realtime 
 detection using this approach.
