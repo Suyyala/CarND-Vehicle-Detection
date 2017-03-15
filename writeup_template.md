@@ -75,13 +75,14 @@ After aggregating list of hot_windows, a heatmap implementation is used to filte
 The code for heatmap implemetation can be found between in file mainapp.py between lines #138 to #144. The helper functions are 
 implemented in Classify.py (lines #18 to #32)
 
-![alt text][image6]
+
 
 ####2. Performance
 
 Ultimately I searched on three scales using  HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I have reduced image search regions for different window sizes to speed up the pipeline. Here are some example images:
 
-![alt text][image7]
+![alt text][image6]
+
 ---
 
 ### Video Implementation
@@ -92,16 +93,16 @@ My results video can be found in gitrepo (./project_video_out.mp4)
 ####2.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+Here's an example result showing the heatmap from a series of 5 frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
+
+
+### Here is the result of hot
 
 ![alt text][image6]
 
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image7]
 
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
+### Here the resulting bounding boxes are drawn after output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all 5 frames: :
 ![alt text][image8]
 
 
