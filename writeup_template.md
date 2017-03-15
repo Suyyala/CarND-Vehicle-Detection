@@ -55,7 +55,8 @@ After, I am satified with test accuracy,saved LinearSVM model for use in my main
 
 ###Sliding Window Search
 
-####1.
+####1. Implementation
+
 With training model saved, rest of the  vehicle detection pipeline is implemeted in mainapp.py from lines #102 to #151.
 
 The code for sliding window search implemented is in file 'classify.py' from lines #38 to #74, which generates list of windows
@@ -73,7 +74,7 @@ implemented in Classify.py (lines #18 to #32)
 
 ![alt text][image3]
 
-####2. 
+####2. Performance
 
 Ultimately I searched on three scales using all channels for HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I have reduced image search regions for different window sizes to speed up the pipeline. Here are some example images:
 
@@ -85,11 +86,9 @@ Ultimately I searched on three scales using all channels for HOG features plus s
 ####1.
 My results video can be found in gitrepo (./project_video_out.mp4)
 
-
 ####2.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
-
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
 ### Here are six frames and their corresponding heatmaps:
@@ -103,12 +102,7 @@ Here's an example result showing the heatmap from a series of frames of video, t
 ![alt text][image7]
 
 
-
----
-
 ###Discussion
-
-####1.
 
 I have spent lot of time fighting false positives, which made to collect more data of trees, roads, traffic signs, dividers etc to reduce the false positives.  However, I have quickly realized it is balanced boat that requires lot of positive instead of lot of negative examples(which will never be exhaustive). Althogh, this feature based implemented works fine to an extent howevet, it is not robust enuogh to changing environment requiring lot of features. Also, need higher framerates and lot of processing power to do realtime 
 detection using this approach.
