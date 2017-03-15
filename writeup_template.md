@@ -9,13 +9,12 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./output_images/test1_windows.jpg
-[image4]: ./output_images/test1_window.jpg
+[image1]: ./examples/car.png
+[image2]: ./examples/not-car.png
+[image3]: ./examples/car_features.jpg
+[image4]: ./output_images/test1_windows.png
 [image5]: ./output_images/test1_hotwindows.png
-[image6]: ./output_images/test1_windows.png
-[image7]: ./output_images/test1_heatmap.png
+[image6]: ./output_images/test1_heatmap.png
 [video1]: ./project_video.mp4
 
 
@@ -26,13 +25,14 @@ The code for this step is contained in files 'train_model.py' from lines #31 to 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
 ![alt text][image1]
+![alt text][image2]
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
 Here is an example using the `YUV` color space and HOG parameters of `orientations=19`, `pixels_per_cell=(16, 16)` and `cells_per_block=(4, 4)`:
 
 
-![alt text][image2]
+![alt text][image3]
 
 ####2. Image feature parameters.
 
