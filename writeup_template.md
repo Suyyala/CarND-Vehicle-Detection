@@ -97,9 +97,9 @@ Here's an example result showing the heatmap from a series of 5 frames of video,
 
 
 
-### Here is the result of hot
+### Here is the result of hot windows where car is predicted
 
-![alt text][image6]
+![alt text][image7]
 
 
 ### Here the resulting bounding boxes are drawn after output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all 5 frames: :
