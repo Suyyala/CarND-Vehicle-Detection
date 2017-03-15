@@ -11,10 +11,12 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 [image1]: ./output_images/car.png
 [image2]: ./output_images/notcar.png
-[image3]: ./output_images/car_features.jpg
-[image4]: ./output_images/test1_windows.png
-[image5]: ./output_images/test1_hotwindows.png
-[image6]: ./output_images/test1_heatmap.png
+[image3]: ./output_images/car_hog_ch0.png
+[image4]: ./output_images/notcar_hog_ch0.png
+[image5]: ./output_images/training_result.png
+[image6]: ./output_images/test1_windows.jpeg
+[image7]: ./output_images/test1_hotwindows.jpeg
+[image8]: ./output_images/test1_heatmap.jpeg
 [video1]: ./project_video.mp4
 
 
@@ -29,10 +31,11 @@ I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an 
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `YUV` color space and HOG parameters of `orientations=19`, `pixels_per_cell=(16, 16)` and `cells_per_block=(4, 4)`:
+Here is an example using the `YUV` color space and HOG parameters of `orientations=19`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
 
 
 ![alt text][image3]
+![alt text][image4]
 
 ####2. Image feature parameters.
 
@@ -51,7 +54,7 @@ https://github.com/udacity/self-driving-car/tree/master/annotations
 
 After, I am satified with test accuracy,saved LinearSVM model for use in my main application pipeline to detect vehicles in project video.
 
-![alt text][image3]
+![alt text][image5]
 
 ###Sliding Window Search
 
@@ -72,13 +75,13 @@ After aggregating list of hot_windows, a heatmap implementation is used to filte
 The code for heatmap implemetation can be found between in file mainapp.py between lines #138 to #144. The helper functions are 
 implemented in Classify.py (lines #18 to #32)
 
-![alt text][image3]
+![alt text][image6]
 
 ####2. Performance
 
-Ultimately I searched on three scales using all channels for HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I have reduced image search regions for different window sizes to speed up the pipeline. Here are some example images:
+Ultimately I searched on three scales using  HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. I have reduced image search regions for different window sizes to speed up the pipeline. Here are some example images:
 
-![alt text][image4]
+![alt text][image7]
 ---
 
 ### Video Implementation
