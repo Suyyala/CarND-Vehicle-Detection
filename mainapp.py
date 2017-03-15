@@ -62,9 +62,9 @@ def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
 ### TODO: Tweak these parameters and see how the results change.
 color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 19  # HOG orientations
-pix_per_cell = 16 # HOG pixels per cell
-cell_per_block = 4 # HOG cells per block
-hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
 spatial_size = (32, 32) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off

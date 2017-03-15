@@ -39,7 +39,7 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
         file_features = []
         # Read in each one by one
         image = mpimg.imread(file)
-        image = (image*255).astype(np.uint8)
+        #We want to keep the image scale between 0 and 255 consistently
         w, h,c = np.shape(image)
         if(c == 4):
             image = convert_color(image, conv='RGBA2RGB')
@@ -55,7 +55,9 @@ def extract_features(imgs, color_space='RGB', spatial_size=(32, 32),
                 feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
             elif color_space == 'YCrCb':
                 feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
-        else: feature_image = np.copy(image)      
+        else: 
+            image = (image*255).astype(np.uint8)
+            feature_image = np.copy(image)
 
         if spatial_feat == True:
             spatial_features = bin_spatial(feature_image, size=spatial_size)
@@ -103,9 +105,9 @@ print('dataset sizes: ',  len(cars), len(notcars))
 ### TODO: Tweak these parameters and see how the results change.
 color_space = 'YUV' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 19  # HOG orientations
-pix_per_cell = 16 # HOG pixels per cell
-cell_per_block = 4 # HOG cells per block
-hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 0 # Can be 0, 1, 2, or "ALL"
 spatial_size = (32, 32) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
