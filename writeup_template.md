@@ -49,22 +49,38 @@ The code for this step is contained in file 'train_model.py' from lines #86 to #
 
 I have used LinearSVM Classifer to train the model with image feature vectors extracted from Step#1. After shuffling the input data (Udacity provided data sets) I have split the data into training and test with 80, 20  ratio. Training data has been normalized using StandardScalar() before fit into LinearSVM classifer.
 
-After the model is trained checked data on test data, which yeild somewhat okey results. There are many false positives, when made me 
-experiment with different image feature parameters described in step #1. Also, i have augmented extra data from udacity data sets i have saved the model for use in my main application pipeline to detect vehicles in captured video.
+After the model is trained, tested accuracy on test data, which yeild score close to .96 to .97. There were many false positives found with trained model, when made me  experiment with various combinations of image feature parameters described in step #1. And also, augmented vehicle data from udacity annotated dataset and some of my own data set to improve the false positives, which I beleve improved classifer prediction.
 
-Following image shows my model accuracy to be about 
+https://github.com/udacity/self-driving-car/tree/master/annotations
+
+After, I am satified with test accuracy,saved LinearSVM model for use in my main application pipeline to detect vehicles in project video.
+
+![alt text][image3]
 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+With training model saved, rest of the  vehicle detection pipeline is implemeted in mainapp.py from lines #102 to #151.
+
+The code for sliding window search implemented is in file 'classify.py' from lines #38 to #74, which generates list of windows
+given the window size and overlapping ratio. I have used this implemetation to generate sliding windows with sizes [ (128,128), (96,96) and (64, 64). This function also takes parameters to reduce the image search region.
+
+Now SVM classifier is fed with Image freatures extracted from Sliding windows created above to classify for cars. If Classifier predictions to be a Car, then the windows are added to list of hot_windows as potential candiates. 
+
+The code for Image extractio and Slding windows prediction is implemented in file 'classify.py' from lines #81 to #157.
+
+After aggregating list of hot_windows, a heatmap implementation is used to filter out the false positives and as well find bounding boxes with overlapping regions. I have used heatmap implementation with aggregated over last 5 frames with thresholds ranging from 
+10 to 15. 
+
+The code for heatmap implemetation can be found between in file mainapp.py between lines #138 to #144. The helper functions are 
+implemented in Classify.py (lines #18 to #32)
 
 ![alt text][image3]
 
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on three scales using all channels for HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
 ![alt text][image4]
 ---
@@ -72,7 +88,7 @@ Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spat
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_out.mp4)
 
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
@@ -99,5 +115,8 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 ####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+I have spent lot of time fighting false positives, which made to collect more data of trees, roads, traffic signs, dividers etc to reduce the false positives.  However, I have quickly realized it is balanced boat that requires lot of positive instead of lot of negative examples(which will never be exhaustive). Althogh, this feature based implemented works fine to an extent howevet, it is not robust enuogh to changing environment requiring lot of features. Also, need higher framerates and lot of processing power to do realtime 
+detection using this approach.
+
+I think deep learning or neural network models along with image feature vectors makes the pipeline more robust and may be realtime implementation with 60 to 90 fps image frame rates. 
 
